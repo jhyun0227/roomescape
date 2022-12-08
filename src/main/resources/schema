@@ -1,0 +1,124 @@
+=====# Theme 테이블 #=======================
+CREATE TABLE `room_escape`.`theme` (
+  `tm_id` INT NOT NULL AUTO_INCREMENT,
+  `tm_name` VARCHAR(30) NOT NULL,
+  `tm_genre` VARCHAR(10) NOT NULL,
+  `tm_level` INT NOT NULL,
+  `tm_info` VARCHAR(200) NULL,
+  `tm_use` CHAR(1) NOT NULL,
+  `tm_picture` VARCHAR(100) NULL,
+  PRIMARY KEY (`tm_id`));
+===========================================
+
+=====# Ability 테이블 #=======================
+CREATE TABLE `room_escape`.`ability` (
+  `ab_id` INT NOT NULL AUTO_INCREMENT,
+  `ab_fear` INT NOT NULL,
+  `ab_reasoning` INT NOT NULL,
+  `ab_numeracy` INT NOT NULL,
+  `ab_solving` INT NOT NULL,
+  `tm_id` INT NOT NULL,
+  PRIMARY KEY (`ab_id`),
+  INDEX `tm_id_idx` (`tm_id` ASC) VISIBLE,
+  CONSTRAINT `ab_tm_id`
+    FOREIGN KEY (`tm_id`)
+    REFERENCES `room_escape`.`theme` (`tm_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION);
+===========================================
+
+=====# ReservationTime 테이블 #=======================
+CREATE TABLE `room_escape`.`reservation_time` (
+  `rt_id` INT NOT NULL AUTO_INCREMENT,
+  `rt_time` TIME NOT NULL,
+  `tm_id` INT NOT NULL,
+  PRIMARY KEY (`rt_id`),
+  INDEX `tm_id_idx` (`tm_id` ASC) VISIBLE,
+  CONSTRAINT `rt_tm_id`
+    FOREIGN KEY (`tm_id`)
+    REFERENCES `room_escape`.`theme` (`tm_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION);
+===========================================
+
+=====# ReservationTime 테이블 #=======================
+CREATE TABLE `room_escape`.`reservation` (
+  `rv_id` INT NOT NULL AUTO_INCREMENT,
+  `rv_date` DATE NOT NULL,
+  `rv_time` TIME NOT NULL,
+  `rv_headcount` INT NOT NULL,
+  `rv_price` INT NOT NULL,
+  `rv_name` VARCHAR(10) NOT NULL,
+  `rv_number` VARCHAR(15) NOT NULL,
+  `rv_password` VARCHAR(5) NOT NULL,
+  `rv_cancel` CHAR(1) NOT NULL,
+  `rv_message` VARCHAR(200) NULL,
+  `tm_id` INT NOT NULL,
+  PRIMARY KEY (`rv_id`),
+  INDEX `rv_tm_id_idx` (`tm_id` ASC) VISIBLE,
+  CONSTRAINT `rv_tm_id`
+    FOREIGN KEY (`tm_id`)
+    REFERENCES `room_escape`.`theme` (`tm_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION);
+===========================================
+
+=====# Operator 테이블 #=======================
+CREATE TABLE `room_escape`.`operator` (
+  `op_id` INT NOT NULL AUTO_INCREMENT,
+  `op_loginid` VARCHAR(10) NOT NULL,
+  `op_password` VARCHAR(15) NOT NULL,
+  `op_nickname` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`op_id`),
+  UNIQUE INDEX `op_loginid_UNIQUE` (`op_loginid` ASC) VISIBLE,
+  UNIQUE INDEX `op_nickname_UNIQUE` (`op_nickname` ASC) VISIBLE);
+===========================================
+
+=====# Notice 테이블 #=======================
+CREATE TABLE `room_escape`.`notice` (
+  `nt_id` INT NOT NULL AUTO_INCREMENT,
+  `nt_title` VARCHAR(20) NOT NULL,
+  `nt_writer` VARCHAR(5) NOT NULL,
+  `nt_datetime` DATETIME NOT NULL,
+  `nt_content` VARCHAR(500) NOT NULL,
+  `nt_view` INT NULL,
+  `op_id` INT NOT NULL,
+  PRIMARY KEY (`nt_id`),
+  INDEX `nt_op_id_idx` (`op_id` ASC) VISIBLE,
+  CONSTRAINT `nt_op_id`
+    FOREIGN KEY (`op_id`)
+    REFERENCES `room_escape`.`operator` (`op_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION);
+===========================================
+
+=====# QnA 테이블 #=======================
+CREATE TABLE `room_escape`.`qna` (
+  `qna_id` INT NOT NULL AUTO_INCREMENT,
+  `qna_writer` VARCHAR(5) NOT NULL,
+  `qna_datetime` DATETIME NOT NULL,
+  `qna_title` VARCHAR(20) NOT NULL,
+  `qna_content` VARCHAR(500) NOT NULL,
+  `qna_password` VARCHAR(5) NOT NULL,
+  PRIMARY KEY (`qna_id`));
+===========================================
+
+=====# Comment 테이블 #=======================
+CREATE TABLE `room_escape`.`comment` (
+  `cm_id` INT NOT NULL AUTO_INCREMENT,
+  `cm_writer` VARCHAR(5) NOT NULL,
+  `cm_datetime` DATETIME NOT NULL,
+  `cm_content` VARCHAR(200) NOT NULL,
+  `cm_password` VARCHAR(5) NOT NULL,
+  `cm_group` INT NOT NULL,
+  `cm_step` INT NOT NULL,
+  `cm_level` INT NOT NULL,
+  `qna_id` INT NOT NULL,
+  PRIMARY KEY (`cm_id`),
+  INDEX `cm_qna_id_idx` (`qna_id` ASC) VISIBLE,
+  CONSTRAINT `cm_qna_id`
+    FOREIGN KEY (`qna_id`)
+    REFERENCES `room_escape`.`qna` (`qna_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION);
+===========================================
