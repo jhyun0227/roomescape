@@ -1,0 +1,2 @@
+===== //Operator =====
+insert into operator (op_loginid, op_password, op_nickname) values ('op1', 'op1', 'op1');
